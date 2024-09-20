@@ -1,0 +1,59 @@
+import java.util.HashSet;
+import java.util.Scanner;
+
+class Solution {
+    public int numUniqueEmails(String[] emails) {
+        // Using a HashSet to track unique email addresses
+        HashSet<String> uniqueEmails = new HashSet<>();
+        
+        for (String email : emails) {
+            String[] parts = email.split("@"); // Split the email into local name and domain
+            String localName = parts[0];
+            String domainName = parts[1];
+            
+            // Remove everything after '+' in the local name
+            if (localName.contains("+")) {
+                localName = localName.substring(0, localName.indexOf('+'));
+            }
+            
+            // Remove all periods '.' from the local name
+            localName = localName.replace(".", "");
+            
+            // Reconstruct the normalized email and add it to the set
+            String normalizedEmail = localName + "@" + domainName;
+            uniqueEmails.add(normalizedEmail);
+        }
+        
+        // Return the number of unique email addresses
+        return uniqueEmails.size();
+    }
+
+    public static void main(String[] args) {
+        // Create a scanner object for dynamic input
+        Scanner scanner = new Scanner(System.in);
+        
+        // Prompt the user for the number of email addresses
+        System.out.println("Enter the number of email addresses:");
+        int n = scanner.nextInt();
+        scanner.nextLine();  // Consume the newline character
+
+        // Create an array to store the email addresses
+        String[] emails = new String[n];
+        
+        // Read each email address from the user
+        System.out.println("Enter the email addresses:");
+        for (int i = 0; i < n; i++) {
+            emails[i] = scanner.nextLine();
+        }
+        
+        // Create an instance of the Solution class and get the result
+        Solution solution = new Solution();
+        int result = solution.numUniqueEmails(emails);
+        
+        // Output the result
+        System.out.println("Number of unique email addresses: " + result);
+        
+        // Close the scanner
+        scanner.close();
+    }
+}

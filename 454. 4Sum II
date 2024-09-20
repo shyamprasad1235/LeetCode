@@ -1,0 +1,28 @@
+import java.util.HashMap;
+
+class Solution {
+    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+        // HashMap to store sums of pairs from A and B
+        HashMap<Integer, Integer> map = new HashMap<>();
+        
+        // Calculate all possible sums of pairs from A and B
+        for (int numA : A) {
+            for (int numB : B) {
+                int sum = numA + numB;
+                map.merge(sum, 1, Integer::sum); // More efficient merging than getOrDefault
+            }
+        }
+        
+        int count = 0;
+        
+        // Calculate all possible sums of pairs from C and D
+        for (int numC : C) {
+            for (int numD : D) {
+                int complement = -(numC + numD);
+                count += map.getOrDefault(complement, 0); // Efficient lookup in one call
+            }
+        }
+        
+        return count;
+    }
+}

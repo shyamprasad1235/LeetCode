@@ -1,0 +1,19 @@
+import java.util.HashSet;
+
+class Solution {
+    public boolean canPermutePalindrome(String s) {
+        // Using a HashSet to track characters with odd occurrences
+        HashSet<Character> set = new HashSet<>();
+        
+        // Iterate through each character in the string
+        for (char c : s.toCharArray()) {
+            if (set.contains(c)) {
+                set.remove(c); // If character is already in the set, remove it (even occurrence)
+            } else {
+                set.add(c); // Otherwise, add it (odd occurrence)
+            }
+        }
+
+        // A string can form a palindrome if it has at most one character with an odd occurrence
+        return set.size() <= 1;
+    }

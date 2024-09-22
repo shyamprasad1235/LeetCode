@@ -1,0 +1,11 @@
+import java.util.*;
+
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        // Step 1: Sort the array in descending order
+        Arrays.sort(nums);
+        
+        // Step 2: Return the element at the (length - k)th position
+        return nums[nums.length - k];
+    }
+}

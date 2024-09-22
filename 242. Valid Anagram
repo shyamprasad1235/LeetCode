@@ -1,0 +1,26 @@
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        // Step 1: Check if lengths are the same
+        if (s.length() != t.length()) {
+            return false;
+        }
+
+        // Step 2: Use an array to store frequencies of characters
+        int[] count = new int[26]; // For 26 lowercase English letters
+
+        // Step 3: Process both strings simultaneously
+        for (int i = 0; i < s.length(); i++) {
+            count[s.charAt(i) - 'a']++; // Increment count for s
+            count[t.charAt(i) - 'a']--; // Decrement count for t
+        }
+
+        // Step 4: Check if any value in the count array is not zero
+        for (int i = 0; i < 26; i++) {
+            if (count[i] != 0) {
+                return false; // If any value is not zero, it's not an anagram
+            }
+        }
+
+        return true; // If all counts are zero, s and t are anagrams
+    }
+}

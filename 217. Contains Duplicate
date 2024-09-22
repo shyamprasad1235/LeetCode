@@ -1,0 +1,17 @@
+class Solution {
+    public boolean containsDuplicate(int[] nums) {
+        // Create a HashSet to store unique numbers
+        HashSet<Integer> seenNumbers = new HashSet<>();
+        
+        // Loop through each number in the array
+        for (int num : nums) {
+            // If it's already in the set, we found a duplicate!
+            if (!seenNumbers.add(num)) {
+                return true;  // Duplicate found, bail out!
+            }
+        }
+        
+        // If no duplicates were found, return false
+        return false;
+    }
+}

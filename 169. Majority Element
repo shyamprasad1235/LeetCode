@@ -1,0 +1,25 @@
+class Solution {
+    public int majorityElement(int[] nums) {
+        int candidate = 0;
+        int count = 0;
+
+        // Phase 1: Find a candidate for majority element
+        for (int num : nums) {
+            if (count == 0) {
+                candidate = num;
+            }
+            count += (num == candidate) ? 1 : -1;
+        }
+
+        // Phase 2: (Optional) Verify the candidate
+        // This step is optional as the problem guarantees that a majority element always exists.
+        count = 0;
+        for (int num : nums) {
+            if (num == candidate) {
+                count++;
+            }
+        }
+
+        return candidate; // Majority element
+    }
+}

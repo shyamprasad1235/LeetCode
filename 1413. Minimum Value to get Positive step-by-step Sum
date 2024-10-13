@@ -1,0 +1,19 @@
+class Solution {
+    public int minStartValue(int[] nums) {
+        int prefixSum = 0;
+        int minPrefixSum = 0;
+
+        // Loop through the array and calculate prefix sum
+        for (int i = 0; i < nums.length; i++) {
+            prefixSum += nums[i];
+
+            // Update minPrefixSum if prefixSum is smaller
+            if (prefixSum < minPrefixSum) {
+                minPrefixSum = prefixSum;
+            }
+        }
+
+        // Return the minimum start value to ensure the sum is at least 1
+        return 1 - minPrefixSum;
+    }
+}    

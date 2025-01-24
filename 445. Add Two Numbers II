@@ -1,0 +1,46 @@
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        // Reverse both input linked lists
+        l1 = reverseList(l1);
+        l2 = reverseList(l2);
+
+        ListNode result = null; // Head of the result list
+        int carry = 0; // Initialize carry to 0
+
+        // Add numbers from both lists and handle the carry
+        while (l1 != null || l2 != null || carry > 0) {
+            int sum = carry;
+
+            if (l1 != null) {
+                sum += l1.val;
+                l1 = l1.next;
+            }
+
+            if (l2 != null) {
+                sum += l2.val;
+                l2 = l2.next;
+            }
+
+            // Create a new node for the current digit
+            ListNode newNode = new ListNode(sum % 10);
+            newNode.next = result;
+            result = newNode;
+
+            carry = sum / 10; // Update the carry
+        }
+
+        return result; // Return the head of the result list
+    }
+
+    // Helper function to reverse a linked list
+    private ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        while (head != null) {
+            ListNode nextNode = head.next;
+            head.next = prev;
+            prev = head;
+            head = nextNode;
+        }
+        return prev;
+    }
+}

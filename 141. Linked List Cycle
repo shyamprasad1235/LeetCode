@@ -1,0 +1,21 @@
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false; // A null or single-node list cannot have a cycle
+        }
+
+        ListNode slow = head;
+        ListNode fast = head;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;           // Move slow pointer by one step
+            fast = fast.next.next;      // Move fast pointer by two steps
+
+            if (slow == fast) {         // If slow and fast meet, a cycle exists
+                return true;
+            }
+        }
+
+        return false; // If fast pointer reaches null, no cycle exists
+    }
+}

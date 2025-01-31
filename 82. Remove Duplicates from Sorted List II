@@ -1,0 +1,23 @@
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        // Create a dummy node to handle edge cases
+        ListNode dummy = new ListNode(0, head);
+        ListNode prev = dummy; // Pointer to track the last unique node
+
+        while (head != null) {
+            // Check if current node has duplicates
+            if (head.next != null && head.val == head.next.val) {
+                // Skip all nodes with the same value
+                while (head.next != null && head.val == head.next.val) {
+                    head = head.next;
+                }
+                prev.next = head.next; // Remove duplicate sequence
+            } else {
+                prev = prev.next; // Move forward if unique
+            }
+            head = head.next; // Move to the next node
+        }
+
+        return dummy.next; // Return the modified list
+    }
+}

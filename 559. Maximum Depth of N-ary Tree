@@ -1,0 +1,65 @@
+# Approach 1: Recursive DFS (Depth-First Search)
+
+import java.util.List;
+
+class Solution {
+    public int maxDepth(Node root) {
+        if (root == null) return 0;
+        if (root.children.isEmpty()) return 1;
+
+        int maxDepth = 0;
+        for (Node child : root.children) {
+            maxDepth = Math.max(maxDepth, maxDepth(child));
+        }
+        return maxDepth + 1;
+    }
+}
+
+# Approach 2: Iterative BFS (Breadth-First Search)
+
+import java.util.*;
+
+class Solution {
+    public int maxDepth(Node root) {
+        if (root == null) return 0;
+
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        int depth = 0;
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Node node = queue.poll();
+                queue.addAll(node.children);
+            }
+            depth++;
+        }
+        return depth;
+    }
+}
+
+# Approach 3: Optimized Recursive DFS with Tail Recursion
+
+import java.util.List;
+
+class Solution {
+    private void dfs(Node node, int depth, int[] maxDepth) {
+        if (node == null) return;
+
+        maxDepth[0] = Math.max(maxDepth[0], depth);
+        
+        for (Node child : node.children) {
+            dfs(child, depth + 1, maxDepth);
+        }
+    }
+
+    public int maxDepth(Node root) {
+        if (root == null) return 0;
+        int[] maxDepth = new int[1]; // Use an array to hold max depth
+        dfs(root, 1, maxDepth);
+        return maxDepth[0];
+    }
+}
+
+

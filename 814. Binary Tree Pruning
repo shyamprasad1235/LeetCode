@@ -1,0 +1,16 @@
+struct TreeNode* pruneTree(struct TreeNode* root) {
+    if (root == NULL)
+        return NULL;
+
+    // Recursively prune left and right subtrees
+    root->left = pruneTree(root->left);
+    root->right = pruneTree(root->right);
+
+    // If current node is 0 and both subtrees are NULL, prune this node
+    if (root->val == 0 && root->left == NULL && root->right == NULL) {
+        free(root); // Free memory to avoid leak
+        return NULL;
+    }
+
+    return root;
+}

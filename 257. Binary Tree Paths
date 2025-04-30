@@ -1,0 +1,37 @@
+#define MAX_PATH_LEN 100
+#define MAX_PATHS 100
+
+// Helper DFS function
+void dfs(struct TreeNode* root, char** result, int* returnSize, char* path, int pathLen) {
+    if (!root) return;
+
+    int len = sprintf(path + pathLen, "%d", root->val); // Append current node value
+
+    pathLen += len;
+
+    // If it's a leaf node, finalize the path and add to result
+    if (!root->left && !root->right) {
+        path[pathLen] = '\0';
+        result[*returnSize] = (char*)malloc((pathLen + 1) * sizeof(char));
+        strcpy(result[*returnSize], path);
+        (*returnSize)++;
+        return;
+    }
+
+    // Not a leaf, continue recursion
+    pathLen += sprintf(path + pathLen, "->"); // Add arrow
+
+    dfs(root->left, result, returnSize, path, pathLen);
+    dfs(root->right, result, returnSize, path, pathLen);
+}
+
+char** binaryTreePaths(struct TreeNode* root, int* returnSize) {
+    char** result = (char**)malloc(MAX_PATHS * sizeof(char*));
+    *returnSize = 0;
+
+    if (!root) return result;
+
+    char path[MAX_PATH_LEN];
+    dfs(root, result, returnSize, path, 0);
+    return result;
+}

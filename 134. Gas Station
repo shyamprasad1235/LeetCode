@@ -1,0 +1,19 @@
+int canCompleteCircuit(int* gas, int gasSize, int* cost, int costSize) {
+    int total_tank = 0;     // Total net gas
+    int curr_tank = 0;      // Current net gas in tank
+    int start_station = 0;  // Candidate start index
+
+    for (int i = 0; i < gasSize; i++) {
+        int net = gas[i] - cost[i];
+        total_tank += net;
+        curr_tank += net;
+
+        // If we run out of gas, try the next station as starting point
+        if (curr_tank < 0) {
+            start_station = i + 1;
+            curr_tank = 0;
+        }
+    }
+
+    return total_tank >= 0 ? start_station : -1;
+}

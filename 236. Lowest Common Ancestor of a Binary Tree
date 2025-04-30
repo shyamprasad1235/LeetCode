@@ -1,0 +1,16 @@
+struct TreeNode* lowestCommonAncestor(struct TreeNode* root, struct TreeNode* p, struct TreeNode* q) {
+    // Base case
+    if (root == NULL || root == p || root == q) {
+        return root;
+    }
+
+    // Recurse on left and right subtrees
+    struct TreeNode* left = lowestCommonAncestor(root->left, p, q);
+    struct TreeNode* right = lowestCommonAncestor(root->right, p, q);
+
+    // If both sides return non-null, current node is the LCA
+    if (left && right) return root;
+
+    // Otherwise, return the non-null child
+    return (left != NULL) ? left : right;
+}

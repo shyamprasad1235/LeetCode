@@ -1,0 +1,14 @@
+int moves = 0;
+
+int dfs (struct TreeNode* node){
+    if(!node) return 0;
+    int left = dfs(node -> left);
+    int right = dfs(node -> right);
+    moves += abs(left) + abs(right);
+    return left + right + (node -> val - 1);
+}
+int distributeCoins(struct TreeNode* root) {
+    moves = 0;
+    dfs(root);
+    return moves;
+}

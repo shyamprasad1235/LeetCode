@@ -1,0 +1,20 @@
+bool isValidSerialization(char* preorder) {
+    int len = strlen(preorder);
+    int slots = 1;
+    int i = 0;
+
+    while (i < len) {
+        slots--;
+        if (slots < 0) return false;
+
+        if (preorder[i] == '#') {
+            i += 2; 
+        } else {
+            slots += 2; 
+            while (i < len && preorder[i] != ',') i++;
+            i++;
+        }
+    }
+
+    return slots == 0;
+}

@@ -1,0 +1,66 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+#include <stdbool.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_STACK_SIZE 10000
+
+struct Stack {
+    struct TreeNode* items[MAX_STACK_SIZE];
+    int top;
+};
+
+// Stack operations
+void push(struct Stack* stack, struct TreeNode* node) {
+    if (stack->top < MAX_STACK_SIZE) {
+        stack->items[stack->top++] = node;
+    }
+}
+
+struct TreeNode* pop(struct Stack* stack) {
+    if (stack->top > 0) {
+        return stack->items[--stack->top];
+    }
+    return NULL;
+}
+
+bool isEmpty(struct Stack* stack) {
+    return stack->top == 0;
+}
+
+bool isValidBST(struct TreeNode* root) {
+    if (root == NULL) {
+        return true; // Empty tree is a valid BST
+    }
+    
+    struct Stack stack = { .top = 0 };
+    long prev = LONG_MIN; // Use long to handle INT_MIN
+    struct TreeNode* curr = root;
+    
+    while (curr != NULL || !isEmpty(&stack)) {
+        // Push all left children
+        while (curr != NULL) {
+            push(&stack, curr);
+            curr = curr->left;
+        }
+        
+        // Process node
+        curr = pop(&stack);
+        if (curr->val <= prev) {
+            return false; // Violates BST property (not strictly increasing)
+        }
+        prev = curr->val; // Update previous value
+        
+        // Move to right child
+        curr = curr->right;
+    }
+    
+    return true;
+}

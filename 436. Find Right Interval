@@ -1,0 +1,42 @@
+typedef struct{
+    int start;
+    int index;
+}IntervalIndex;
+
+int compare (const void* a, const void* b){
+    return ((IntervalIndex*)a)->start - ((IntervalIndex*)b)->start;
+}
+
+int binarySearch(IntervalIndex* arr, int size, int target){
+    int left = 0, right = size - 1;
+    while(left <= right){
+        int mid = left + (right - left) / 2;
+        if(arr[mid].start < target){
+            left = mid + 1;
+        }else{
+            right = mid - 1;
+        }
+    }
+    return left;
+}
+int* findRightInterval(int** intervals, int intervalsSize, int* intervalsColSize, int* returnSize) {
+
+    IntervalIndex* arr = (IntervalIndex*)malloc(intervalsSize * sizeof(IntervalIndex));
+    for (int i = 0; i< intervalsSize; i++){
+        arr[i].start = intervals[i][0];
+        arr[i].index = i;
+    }
+    qsort(arr, intervalsSize, sizeof(IntervalIndex), compare);
+
+    int* result = (int*)malloc(intervalsSize * sizeof(int));
+    *returnSize = intervalsSize;
+
+    for(int i = 0; i < intervalsSize; i++){
+        int end = intervals[i][1];
+        int j = binarySearch(arr, intervalsSize, end);
+        result[i] = (j < intervalsSize) ? arr[j].index : -1;
+    }
+    free(arr);
+
+    return result;    
+}

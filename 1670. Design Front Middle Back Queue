@@ -1,0 +1,116 @@
+typedef struct Node {
+    int val;
+    struct Node* prev;
+    struct Node* next;
+} Node;
+
+typedef struct {
+    Node* head;
+    Node* tail;
+    int size;
+} FrontMiddleBackQueue;
+
+Node* newNode(int val) {
+    Node* node = (Node*)malloc(sizeof(Node));
+    node->val = val;
+    node->prev = node->next = NULL;
+    return node;
+}
+
+FrontMiddleBackQueue* frontMiddleBackQueueCreate() {
+    FrontMiddleBackQueue* q = (FrontMiddleBackQueue*)malloc(sizeof(FrontMiddleBackQueue));
+    q->head = q->tail = NULL;
+    q->size = 0;
+    return q;
+}
+
+void insertAt(FrontMiddleBackQueue* obj, int index, int val) {
+    Node* node = newNode(val);
+    if (obj->size == 0) {
+        obj->head = obj->tail = node;
+    } else if (index == 0) {
+        node->next = obj->head;
+        obj->head->prev = node;
+        obj->head = node;
+    } else if (index == obj->size) {
+        node->prev = obj->tail;
+        obj->tail->next = node;
+        obj->tail = node;
+    } else {
+        Node* curr = obj->head;
+        for (int i = 0; i < index; i++) {
+            curr = curr->next;
+        }
+        node->prev = curr->prev;
+        node->next = curr;
+        if (curr->prev) curr->prev->next = node;
+        curr->prev = node;
+        if (index == 0) obj->head = node;
+    }
+    obj->size++;
+}
+
+int deleteAt(FrontMiddleBackQueue* obj, int index) {
+    if (obj->size == 0) return -1;
+
+    Node* curr;
+    if (index == 0) {
+        curr = obj->head;
+        if (obj->head == obj->tail) {
+            obj->head = obj->tail = NULL;
+        } else {
+            obj->head = obj->head->next;
+            obj->head->prev = NULL;
+        }
+    } else if (index == obj->size - 1) {
+        curr = obj->tail;
+        obj->tail = obj->tail->prev;
+        obj->tail->next = NULL;
+    } else {
+        curr = obj->head;
+        for (int i = 0; i < index; i++) curr = curr->next;
+        curr->prev->next = curr->next;
+        curr->next->prev = curr->prev;
+    }
+    int val = curr->val;
+    free(curr);
+    obj->size--;
+    return val;
+}
+
+void frontMiddleBackQueuePushFront(FrontMiddleBackQueue* obj, int val) {
+    insertAt(obj, 0, val);
+}
+
+void frontMiddleBackQueuePushMiddle(FrontMiddleBackQueue* obj, int val) {
+    int mid = obj->size / 2;
+    insertAt(obj, mid, val);
+}
+
+void frontMiddleBackQueuePushBack(FrontMiddleBackQueue* obj, int val) {
+    insertAt(obj, obj->size, val);
+}
+
+int frontMiddleBackQueuePopFront(FrontMiddleBackQueue* obj) {
+    return deleteAt(obj, 0);
+}
+
+int frontMiddleBackQueuePopMiddle(FrontMiddleBackQueue* obj) {
+    if (obj->size == 0) return -1;
+    int mid = (obj->size - 1) / 2;
+    return deleteAt(obj, mid);
+}
+
+int frontMiddleBackQueuePopBack(FrontMiddleBackQueue* obj) {
+    return deleteAt(obj, obj->size - 1);
+}
+
+void frontMiddleBackQueueFree(FrontMiddleBackQueue* obj) {
+    Node* curr = obj->head;
+    while (curr) {
+        Node* temp = curr;
+        curr = curr->next;
+        free(temp);
+    }
+    free(obj);
+}

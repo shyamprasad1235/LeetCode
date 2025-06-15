@@ -1,0 +1,63 @@
+
+
+
+typedef struct {
+    int* times;
+    int* leaders;
+    int size;    
+} TopVotedCandidate;
+
+
+TopVotedCandidate* topVotedCandidateCreate(int* persons, int personsSize, int* times, int timesSize) {
+    TopVotedCandidate* obj = (TopVotedCandidate*)malloc(sizeof(TopVotedCandidate));
+
+    obj->times = times;
+    obj->size = timesSize;
+
+    obj->leaders = (int*)malloc(timesSize * sizeof(int));
+
+    int voteCount[5000] = {0};
+    int maxVotes = 0;
+    int leader = -1;
+
+    for (int i = 0; i < personsSize; i++){
+        voteCount[persons[i]]++;
+
+        if (voteCount[persons[i]] >= maxVotes){
+            maxVotes = voteCount[persons[i]];
+            leader = persons[i];
+        }
+
+        obj->leaders[i] = leader;
+    }
+    return obj;
+}
+
+int topVotedCandidateQ(TopVotedCandidate* obj, int t) {
+    int left = 0, right = obj->size - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (obj->times[mid] == t) {
+            return obj->leaders[mid];
+        } else if (obj->times[mid] < t) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return obj->leaders[right];
+}
+
+void topVotedCandidateFree(TopVotedCandidate* obj) {
+    free(obj->leaders);
+
+    free(obj);    
+}
+
+/**
+ * Your TopVotedCandidate struct will be instantiated and called as such:
+ * TopVotedCandidate* obj = topVotedCandidateCreate(persons, personsSize, times, timesSize);
+ * int param_1 = topVotedCandidateQ(obj, t);
+ 
+ * topVotedCandidateFree(obj);
+*/

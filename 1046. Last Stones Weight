@@ -1,0 +1,65 @@
+void swap(int* a, int* b) {
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+void heapifyDown(int* heap, int size, int index) {
+    int largest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (left < size && heap[left] > heap[largest])
+        largest = left;
+
+    if (right < size && heap[right] > heap[largest])
+        largest = right;
+
+    if (largest != index) {
+        swap(&heap[index], &heap[largest]);
+        heapifyDown(heap, size, largest);
+    }
+}
+
+void heapifyUp(int* heap, int index) {
+    int parent = (index - 1) / 2;
+
+    if (index > 0 && heap[index] > heap[parent]) {
+        swap(&heap[index], &heap[parent]);
+        heapifyUp(heap, parent);
+    }
+}
+
+void insert(int* heap, int* size, int val) {
+    heap[*size] = val;
+    heapifyUp(heap, *size);
+    (*size)++;
+}
+
+int removeMax(int* heap, int* size) {
+    int max = heap[0];
+    heap[0] = heap[*size - 1];
+    (*size)--;
+    heapifyDown(heap, *size, 0);
+    return max;
+}
+
+int lastStoneWeight(int* stones, int stonesSize) {
+    int heap[1001]; 
+    int heapSize = 0;
+
+    for (int i = 0; i < stonesSize; i++) {
+        insert(heap, &heapSize, stones[i]);
+    }
+
+    while (heapSize > 1) {
+        int y = removeMax(heap, &heapSize);
+        int x = removeMax(heap, &heapSize);
+
+        if (y != x) {
+            insert(heap, &heapSize, y - x);
+        }
+    }
+
+    return heapSize == 1 ? heap[0] : 0;
+}

@@ -1,0 +1,74 @@
+typedef struct {
+    int nextSeat;              
+    int* heap;                 
+    int heapSize;              
+    int heapCapacity;          
+} SeatManager;
+
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void heapifyUp(int* heap, int index) {
+    while (index > 0) {
+        int parent = (index - 1) / 2;
+        if (heap[index] < heap[parent]) {
+            swap(&heap[index], &heap[parent]);
+            index = parent;
+        } else {
+            break;
+        }
+    }
+}
+
+void heapifyDown(int* heap, int heapSize, int index) {
+    int smallest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (left < heapSize && heap[left] < heap[smallest]) {
+        smallest = left;
+    }
+    if (right < heapSize && heap[right] < heap[smallest]) {
+        smallest = right;
+    }
+    if (smallest != index) {
+        swap(&heap[index], &heap[smallest]);
+        heapifyDown(heap, heapSize, smallest);
+    }
+}
+
+SeatManager* seatManagerCreate(int n) {
+    SeatManager* obj = (SeatManager*)malloc(sizeof(SeatManager));
+    obj->nextSeat = 1;                    
+    obj->heapSize = 0;                    
+    obj->heapCapacity = 100000;           
+    obj->heap = (int*)malloc(obj->heapCapacity * sizeof(int));
+    return obj;
+}
+
+int seatManagerReserve(SeatManager* obj) {
+    if (obj->heapSize > 0 && obj->heap[0] < obj->nextSeat) {
+
+        int seat = obj->heap[0];
+        obj->heap[0] = obj->heap[obj->heapSize - 1]; 
+        obj->heapSize--;
+        heapifyDown(obj->heap, obj->heapSize, 0);    
+        return seat;
+    } else {
+        
+        return obj->nextSeat++;
+    }
+}
+
+void seatManagerUnreserve(SeatManager* obj, int seatNumber) {
+    obj->heap[obj->heapSize++] = seatNumber;         
+    heapifyUp(obj->heap, obj->heapSize - 1);        
+}
+
+void seatManagerFree(SeatManager* obj) {
+    free(obj->heap);                                 
+    free(obj);                                       
+}

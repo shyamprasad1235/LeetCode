@@ -1,0 +1,64 @@
+typedef struct {
+    int key;       
+    int value;     
+    UT_hash_handle hh;
+} HashMap;
+
+void insert(HashMap **map, int key, int value) {
+    HashMap *entry = NULL;
+    HASH_FIND_INT(*map, &key, entry);
+    if (!entry) {
+        entry = (HashMap*)malloc(sizeof(HashMap));
+        entry->key = key;
+        entry->value = value;
+        HASH_ADD_INT(*map, key, entry);
+    } else {
+        entry->value = value;
+    }
+}
+
+int get(HashMap *map, int key) {
+    HashMap *entry = NULL;
+    HASH_FIND_INT(map, &key, entry);
+    return entry ? entry->value : -2;
+}
+
+void freeMap(HashMap *map) {
+    HashMap *curr, *tmp;
+    HASH_ITER(hh, map, curr, tmp) {
+        HASH_DEL(map, curr);
+        free(curr);
+    }
+}
+
+int minSubarray(int* nums, int numsSize, int p) {
+    long long total = 0;
+    for (int i = 0; i < numsSize; i++) {
+        total = (total + nums[i]) % p;
+    }
+
+    int mod = (int)total;
+    if (mod == 0) return 0;
+
+    HashMap *map = NULL;
+    insert(&map, 0, -1);
+
+    long long prefix = 0;
+    int result = numsSize;
+
+    for (int i = 0; i < numsSize; i++) {
+        prefix = (prefix + nums[i]) % p;
+        int need = (int)((prefix - mod + p) % p);
+
+        int prevIndex = get(map, need);
+        if (prevIndex != -2) {
+            int len = i - prevIndex;
+            if (len < result) result = len;
+        }
+
+        insert(&map, (int)prefix, i);
+    }
+
+    freeMap(map);
+    return result == numsSize ? -1 : result;
+}

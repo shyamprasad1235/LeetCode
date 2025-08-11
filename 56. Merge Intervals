@@ -1,58 +1,42 @@
+#include <stdio.h>
 #include <stdlib.h>
 
-typedef struct {
-    int start;
-    int end;
-} Interval;
-
-int compare(const void* a, const void* b) {
-    Interval* ia = (Interval*)a;
-    Interval* ib = (Interval*)b;
-    if (ia->start == ib->start)
-        return ia->end - ib->end;
-    return ia->start - ib->start;
+int cmp(const void *a, const void *b) {
+    int *ia = *(int **)a;
+    int *ib = *(int **)b;
+    return ia[0] - ib[0];
 }
 
-int** merge(int** intervals, int intervalsSize, int* intervalsColSize, int* returnSize, int** returnColumnSizes) {
+int** merge(int** intervals, int intervalsSize, int* intervalsColSize, 
+            int* returnSize, int** returnColumnSizes) {
+    
     if (intervalsSize == 0) {
         *returnSize = 0;
-        *returnColumnSizes = (int*)malloc(0);
-        return (int**)malloc(0);
+        *returnColumnSizes = NULL;
+        return NULL;
     }
 
-    Interval* arr = (Interval*)malloc(intervalsSize * sizeof(Interval));
-    for (int i = 0; i < intervalsSize; i++) {
-        arr[i].start = intervals[i][0];
-        arr[i].end = intervals[i][1];
-    }
+    qsort(intervals, intervalsSize, sizeof(int*), cmp);
 
-    qsort(arr, intervalsSize, sizeof(Interval), compare);
-
-    int** result = (int**)malloc(intervalsSize * sizeof(int*));
-    *returnColumnSizes = (int*)malloc(intervalsSize * sizeof(int));
-    int resultIndex = 0;
-
-    result[0] = (int*)malloc(2 * sizeof(int));
-    result[0][0] = arr[0].start;
-    result[0][1] = arr[0].end;
-    (*returnColumnSizes)[0] = 2;
-    resultIndex++;
-
+    int writeIndex = 0;
+    
     for (int i = 1; i < intervalsSize; i++) {
-        int* last = result[resultIndex - 1];
-        if (arr[i].start <= last[1]) {            
-            last[1] = last[1] > arr[i].end ? last[1] : arr[i].end;
-        } else {            
-            result[resultIndex] = (int*)malloc(2 * sizeof(int));
-            result[resultIndex][0] = arr[i].start;
-            result[resultIndex][1] = arr[i].end;
-            (*returnColumnSizes)[resultIndex] = 2;
-            resultIndex++;
+        if (intervals[i][0] <= intervals[writeIndex][1]) {
+
+            if (intervals[i][1] > intervals[writeIndex][1])
+                intervals[writeIndex][1] = intervals[i][1];
+        } else {
+
+            writeIndex++;
+            intervals[writeIndex] = intervals[i];
         }
     }
 
-    free(arr);
+    *returnColumnSizes = (int *)malloc(sizeof(int) * (writeIndex + 1));
+    for (int i = 0; i <= writeIndex; i++)
+        (*returnColumnSizes)[i] = 2;
     
-    *returnSize = resultIndex;
-    return result;
+    *returnSize = writeIndex + 1;
+    return intervals;
 }
+

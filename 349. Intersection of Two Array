@@ -1,28 +1,52 @@
-import java.util.HashSet;
+1. C++ Code
+
+#include <vector>
+#include <unordered_set>
+using namespace std;
 
 class Solution {
-    public int[] intersection(int[] nums1, int[] nums2) {
-        // Use HashSet to store unique elements from the first array
-        HashSet<Integer> set1 = new HashSet<>();
-        for (int num : nums1) {
-            set1.add(num);
-        }
-
-        // Use another HashSet to store the intersection
-        HashSet<Integer> intersectionSet = new HashSet<>();
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        unordered_set<int> set1(nums1.begin(), nums1.end()); // store nums1
+        vector<int> result;
+        
         for (int num : nums2) {
-            if (set1.contains(num)) {
-                intersectionSet.add(num);
+            if (set1.find(num) != set1.end()) {
+                result.push_back(num);
+                set1.erase(num); // ensure uniqueness
             }
         }
-
-        // Convert the intersection set back to an array
-        int[] result = new int[intersectionSet.size()];
-        int index = 0;
-        for (int num : intersectionSet) {
-            result[index++] = num;
-        }
-
         return result;
     }
+};
+
+2. C Code
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define OFFSET 1000
+#define SIZE 2001  
+
+int* intersection(int* nums1, int nums1Size, int* nums2, int nums2Size, int* returnSize) {
+    int *hash = (int*)calloc(SIZE, sizeof(int));  // hash array
+    int *result = (int*)malloc(sizeof(int) * (nums1Size < nums2Size ? nums1Size : nums2Size));
+    *returnSize = 0;
+
+    for (int i = 0; i < nums1Size; i++) {
+        hash[nums1[i] + OFFSET] = 1;  
+    }
+
+    for (int i = 0; i < nums2Size; i++) {
+        if (hash[nums2[i] + OFFSET] == 1) {
+            result[*returnSize] = nums2[i];
+            (*returnSize)++;
+            hash[nums2[i] + OFFSET] = -1; 
+        }
+    }
+
+    free(hash);
+    return result;
 }
+

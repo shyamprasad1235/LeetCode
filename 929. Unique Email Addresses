@@ -1,59 +1,95 @@
-import java.util.HashSet;
-import java.util.Scanner;
+1. C Code
+
+char* normalizeEmail(const char* email) {
+    char* result = (char*)malloc(105 * sizeof(char)); 
+    int i = 0, j = 0;
+
+    while (email[i] != '@') {
+        if (email[i] == '+') {
+            while (email[i] != '@') i++;
+            break;
+        }
+        if (email[i] != '.') {
+            result[j++] = email[i];
+        }
+        i++;
+    }
+    while (email[i] != '\0') {
+        result[j++] = email[i++];
+    }
+    result[j] = '\0';
+    return result;
+}
+
+int numUniqueEmails(char** emails, int emailsSize) {
+    char* unique[emailsSize];  
+    int uniqueCount = 0;
+    
+    for (int i = 0; i < emailsSize; i++) {
+        char* norm = normalizeEmail(emails[i]);
+
+        int exists = 0;
+        for (int k = 0; k < uniqueCount; k++) {
+            if (strcmp(unique[k], norm) == 0) {
+                exists = 1;
+                break;
+            }
+        }
+        
+        if (!exists) {
+            unique[uniqueCount++] = norm;
+        } else {
+            free(norm); 
+        }
+    }
+
+    for (int i = 0; i < uniqueCount; i++) {
+        free(unique[i]);
+    }
+    
+    return uniqueCount;
+}
+
+2. C++ Code
+
+#include <bits/stdc++.h>
+using namespace std;
 
 class Solution {
-    public int numUniqueEmails(String[] emails) {
-        // Using a HashSet to track unique email addresses
-        HashSet<String> uniqueEmails = new HashSet<>();
+public:
+    int numUniqueEmails(vector<string>& emails) {
+        unordered_set<string> unique;
+        unique.reserve(emails.size() * 2); // reduce rehashing
         
-        for (String email : emails) {
-            String[] parts = email.split("@"); // Split the email into local name and domain
-            String localName = parts[0];
-            String domainName = parts[1];
+        for (string &email : emails) {
+            string normalized;
+            normalized.reserve(email.size()); // avoid reallocations
             
-            // Remove everything after '+' in the local name
-            if (localName.contains("+")) {
-                localName = localName.substring(0, localName.indexOf('+'));
+            int i = 0, n = email.size();
+            
+            // process local name
+            while (i < n && email[i] != '@') {
+                if (email[i] == '+') {
+                    while (i < n && email[i] != '@') i++; // skip rest
+                    break;
+                }
+                if (email[i] != '.') {
+                    normalized.push_back(email[i]);
+                }
+                i++;
             }
             
-            // Remove all periods '.' from the local name
-            localName = localName.replace(".", "");
+            // copy domain part (from '@' till end)
+            while (i < n) {
+                normalized.push_back(email[i]);
+                i++;
+            }
             
-            // Reconstruct the normalized email and add it to the set
-            String normalizedEmail = localName + "@" + domainName;
-            uniqueEmails.add(normalizedEmail);
+            unique.insert(move(normalized)); // avoid extra copy
         }
         
-        // Return the number of unique email addresses
-        return uniqueEmails.size();
+        return unique.size();
     }
+};
 
-    public static void main(String[] args) {
-        // Create a scanner object for dynamic input
-        Scanner scanner = new Scanner(System.in);
-        
-        // Prompt the user for the number of email addresses
-        System.out.println("Enter the number of email addresses:");
-        int n = scanner.nextInt();
-        scanner.nextLine();  // Consume the newline character
 
-        // Create an array to store the email addresses
-        String[] emails = new String[n];
-        
-        // Read each email address from the user
-        System.out.println("Enter the email addresses:");
-        for (int i = 0; i < n; i++) {
-            emails[i] = scanner.nextLine();
-        }
-        
-        // Create an instance of the Solution class and get the result
-        Solution solution = new Solution();
-        int result = solution.numUniqueEmails(emails);
-        
-        // Output the result
-        System.out.println("Number of unique email addresses: " + result);
-        
-        // Close the scanner
-        scanner.close();
-    }
-}

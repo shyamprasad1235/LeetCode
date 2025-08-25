@@ -1,31 +1,70 @@
-import java.util.LinkedList;
-import java.util.Queue;
+1. Recursive Method
 
-class Solution {
-    public int minDepth(TreeNode root) {
-        if (root == null) return 0; // Base case: Empty tree
-        
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(root);
-        int depth = 1; // Root is at depth 1
+int minDepth(struct TreeNode* root) {
+    if (root == NULL) return 0;
 
-        while (!queue.isEmpty()) {
-            int size = queue.size(); // Number of nodes at current level
-            
-            for (int i = 0; i < size; i++) {
-                TreeNode node = queue.poll();
+    if (root->left == NULL) return 1 + minDepth(root->right);
 
-                // If we find a leaf node, return the current depth
-                if (node.left == null && node.right == null) return depth;
+    if (root->right == NULL) return 1 + minDepth(root->left);
 
-                // Enqueue left and right children if they exist
-                if (node.left != null) queue.offer(node.left);
-                if (node.right != null) queue.offer(node.right);
-            }
+    int leftDepth = minDepth(root->left);
+    int rightDepth = minDepth(root->right);
+    return 1 + (leftDepth < rightDepth ? leftDepth : rightDepth);
+}
 
-            depth++; // Move to the next level
-        }
 
-        return depth; // This line should never be reached
+2. Iterative BFS Method
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct QueueNode {
+    struct TreeNode* node;
+    int depth;
+    struct QueueNode* next;
+};
+
+void enqueue(struct QueueNode** head, struct TreeNode* node, int depth) {
+    struct QueueNode* newNode = (struct QueueNode*)malloc(sizeof(struct QueueNode));
+    newNode->node = node;
+    newNode->depth = depth;
+    newNode->next = NULL;
+    if (*head == NULL) {
+        *head = newNode;
+    } else {
+        struct QueueNode* temp = *head;
+        while (temp->next) temp = temp->next;
+        temp->next = newNode;
     }
 }
+
+struct QueueNode* dequeue(struct QueueNode** head) {
+    if (*head == NULL) return NULL;
+    struct QueueNode* temp = *head;
+    *head = (*head)->next;
+    return temp;
+}
+
+int minDepth(struct TreeNode* root) {
+    if (root == NULL) return 0;
+
+    struct QueueNode* q = NULL;
+    enqueue(&q, root, 1);
+
+    while (q != NULL) {
+        struct QueueNode* front = dequeue(&q);
+        struct TreeNode* node = front->node;
+        int depth = front->depth;
+
+        if (node->left == NULL && node->right == NULL) {
+            return depth;
+        }
+
+        if (node->left) enqueue(&q, node->left, depth + 1);
+        if (node->right) enqueue(&q, node->right, depth + 1);
+
+        free(front);
+    }
+    return 0;
+}
+

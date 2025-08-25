@@ -1,38 +1,18 @@
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+int diameter;
+int depth(struct TreeNode* root) {
+    if (root == NULL) return 0;
 
-public class Solution {
-    public int diameterOfBinaryTree(TreeNode root) {
-        if (root == null) return 0;
+    int left = depth(root->left);
+    int right = depth(root->right);
 
-        Map<TreeNode, Integer> heightMap = new HashMap<>();
-        Stack<TreeNode> stack = new Stack<>();
-        int diameter = 0;
+    if (left + right > diameter)
+        diameter = left + right;   
 
-        stack.push(root);
+    return (left > right ? left : right) + 1; 
 
-        while (!stack.isEmpty()) {
-            TreeNode node = stack.peek();
-
-            if (node.left != null && !heightMap.containsKey(node.left)) {
-                stack.push(node.left);
-            }
-
-            else if (node.right != null && !heightMap.containsKey(node.right)) {
-                stack.push(node.right);
-            }
-
-            else {
-                stack.pop();
-                int left = heightMap.getOrDefault(node.left, 0);
-                int right = heightMap.getOrDefault(node.right, 0);
-                int height = Math.max(left, right) + 1;
-                heightMap.put(node, height);
-                diameter = Math.max(diameter, left + right);
-            }
-        }
-
-        return diameter;
-    }
+int diameterOfBinaryTree(struct TreeNode* root) {
+    diameter = 0;
+    depth(root);
+    return diameter;
 }
+

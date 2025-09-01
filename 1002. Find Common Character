@@ -1,41 +1,71 @@
-import java.util.ArrayList;
-import java.util.List;
+1. C++ Code
 
 class Solution {
-    public List<String> commonChars(String[] words) {
-        // Array to store the minimum frequency of each character in all strings
-        int[] minFreq = new int[26]; 
-        // Initialize with maximum possible value for each character
-        for (int i = 0; i < 26; i++) {
-            minFreq[i] = Integer.MAX_VALUE;
-        }
+public:
+    vector<string> commonChars(vector<string>& words) {
 
-        // Iterate through each word in the input array
-        for (String word : words) {
-            int[] charCount = new int[26]; // Array to store the frequency of each character in the current word
-            
-            // Count frequency of each character in the current word
-            for (char c : word.toCharArray()) {
-                charCount[c - 'a']++;
+        vector<int> globalFreq(26, INT_MAX);
+
+        for (string& word : words) {
+            vector<int> localFreq(26, 0);
+
+            for (char c : word) {
+                localFreq[c - 'a']++;
             }
-            
-            // Update the minimum frequency of each character
+
             for (int i = 0; i < 26; i++) {
-                minFreq[i] = Math.min(minFreq[i], charCount[i]);
+                globalFreq[i] = min(globalFreq[i], localFreq[i]);
             }
         }
 
-        // Prepare the result list
-        List<String> result = new ArrayList<>();
+        vector<string> result;
         for (int i = 0; i < 26; i++) {
-            while (minFreq[i] > 0) {
-                result.add(Character.toString((char) (i + 'a')));
-                minFreq[i]--;
+            while (globalFreq[i] > 0) {
+                result.push_back(string(1, 'a' + i));
+                globalFreq[i]--;
             }
         }
 
         return result;
     }
+};
 
-    
+
+2. C Code
+
+char** commonChars(char** words, int wordsSize, int* returnSize) {
+    int globalFreq[26];
+    for (int i = 0; i < 26; i++) {
+        globalFreq[i] = INT_MAX;
+    }
+
+    for (int i = 0; i < wordsSize; i++) {
+        int localFreq[26] = {0};
+
+        for (int j = 0; words[i][j] != '\0'; j++) {
+            localFreq[words[i][j] - 'a']++;
+        }
+
+        for (int k = 0; k < 26; k++) {
+            if (localFreq[k] < globalFreq[k]) {
+                globalFreq[k] = localFreq[k];
+            }
+        }
+    }
+
+    char** result = (char**)malloc(100 * sizeof(char*)); 
+    *returnSize = 0;
+
+    for (int i = 0; i < 26; i++) {
+        while (globalFreq[i] > 0) {
+            result[*returnSize] = (char*)malloc(2 * sizeof(char));
+            result[*returnSize][0] = 'a' + i;
+            result[*returnSize][1] = '\0';
+            (*returnSize)++;
+            globalFreq[i]--;
+        }
+    }
+
+    return result;
 }
+

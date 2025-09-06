@@ -1,60 +1,18 @@
-import java.util.HashMap;
-import java.util.Scanner;
-
+#include <vector>
+#include <unordered_map>
+using namespace std;
 class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        // Use a HashMap to store the value and its index
-        var map = new HashMap<Integer, Integer>();
-        
-        // Iterate over the array
-        for (int i = 0; i < nums.length; i++) {
-            // Calculate the complement
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> mp; 
+        for (int i = 0; i < nums.size(); i++) {
             int complement = target - nums[i];
-            
-            // If the complement exists, return indices immediately
-            if (map.containsKey(complement)) {
-                return new int[] { map.get(complement), i };
+            if (mp.find(complement) != mp.end()) {
+                return {mp[complement], i};
             }
-            
-            // Add the current number and its index to the map
-            map.put(nums[i], i);
+            mp[nums[i]] = i;
         }
-        
-        // If no solution is found, throw an exception
-        throw new IllegalArgumentException("No two sum solution");
+        return {};
     }
+};
 
-    public static void main(String[] args) {
-        // Scanner for dynamic input
-        Scanner scanner = new Scanner(System.in);
-        
-        // Input array size
-        System.out.println("Enter the number of elements in the array:");
-        int n = scanner.nextInt();
-        
-        // Initialize array
-        int[] nums = new int[n];
-        
-        // Input array elements
-        System.out.println("Enter the elements of the array:");
-        for (int i = 0; i < n; i++) {
-            nums[i] = scanner.nextInt();
-        }
-        
-        // Input target sum
-        System.out.println("Enter the target sum:");
-        int target = scanner.nextInt();
-        
-        // Create instance and find the indices
-        Solution solution = new Solution();
-        try {
-            int[] result = solution.twoSum(nums, target);
-            System.out.println("Indices of the two numbers are: " + result[0] + " and " + result[1]);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-
-        // Close the scanner
-        scanner.close();
-    }
-}

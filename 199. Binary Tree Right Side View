@@ -1,18 +1,24 @@
- void dfs(struct TreeNode* root, int level, int* result, int* returnSize){
-    if(!root) return;
-
-    if(level == *returnSize){
-        result[*returnSize] = root->val;
-        (*returnSize)++;
+int* rightSideView(struct TreeNode* root, int* returnSize) {
+    if (root == NULL) {
+        *returnSize = 0;
+        return NULL;
     }
-
-    dfs(root->right, level + 1, result, returnSize);
-    dfs(root->left, level + 1, result, returnSize);
-}
-
-int* rightSideView(struct TreeNode* root, int* returnSize){
+    int* result = (int*)malloc(100 * sizeof(int));  
+    struct TreeNode* queue[1000];                   
+    int front = 0, rear = 0;
+    queue[rear++] = root;   
     *returnSize = 0;
-    int* result = (int*)malloc(100 * sizeof(int));
-    dfs(root, 0, result, returnSize);
+    while (front < rear) {
+        int levelSize = rear - front;
+        for (int i = 0; i < levelSize; i++) {
+            struct TreeNode* node = queue[front++];  
+            if (i == levelSize - 1) {
+                result[(*returnSize)++] = node->val;
+            }
+            if (node->left) queue[rear++] = node->left;
+            if (node->right) queue[rear++] = node->right;
+        }
+    }
     return result;
 }
+

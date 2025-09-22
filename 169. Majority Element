@@ -1,25 +1,15 @@
 class Solution {
-    public int majorityElement(int[] nums) {
-        int candidate = 0;
-        int count = 0;
-
-        // Phase 1: Find a candidate for majority element
+public:
+    int majorityElement(vector<int>& nums) {
+        unordered_map<int, int> freq;
+        int n = nums.size();
         for (int num : nums) {
-            if (count == 0) {
-                candidate = num;
-            }
-            count += (num == candidate) ? 1 : -1;
-        }
-
-        // Phase 2: (Optional) Verify the candidate
-        // This step is optional as the problem guarantees that a majority element always exists.
-        count = 0;
-        for (int num : nums) {
-            if (num == candidate) {
-                count++;
+            freq[num]++;
+            if (freq[num] > n / 2) {
+                return num; 
             }
         }
-
-        return candidate; // Majority element
+        return -1;
     }
-}
+};
+

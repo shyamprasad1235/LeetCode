@@ -1,0 +1,23 @@
+int poisonousPlants(int p_count, int* p) {
+    int* days = (int*)calloc(p_count, sizeof(int));
+    int maxDays = 0;
+    int* stack = (int*)malloc(p_count * sizeof(int));
+    int top = -1;
+    for (int i = 0; i < p_count; i++) {
+        int d = 0;
+        while (top >= 0 && p[i] <= p[stack[top]]) {
+            d = (d > days[stack[top]]) ? d : days[stack[top]];
+            top--;
+        }
+        if (top >= 0) {
+            days[i] = d + 1;  
+        } else {
+            days[i] = 0;      
+        }
+        if (days[i] > maxDays) maxDays = days[i];
+        stack[++top] = i;
+    }
+    free(stack);
+    free(days);
+    return maxDays;
+}

@@ -1,36 +1,29 @@
-import java.util.HashMap;
-
-public class Solution {
-    public boolean checkSubarraySum(int[] nums, int k) {
-        // HashMap to store (remainder, index)
-        HashMap<Integer, Integer> map = new HashMap<>();
-        
-        // Initialize with remainder 0 at index -1 (to handle cases where sum itself is a multiple of k)
-        map.put(0, -1);
+class Solution {
+public:
+    bool checkSubarraySum(vector<int>& nums, int k) {
+        unordered_map<int, int> mp; 
+        mp[0] = -1; 
         
         int sum = 0;
         
-        // Traverse the array
-        for (int i = 0; i < nums.length; i++) {
-            sum += nums[i];  // Add current number to the cumulative sum
+        for (int i = 0; i < nums.size(); i++) {
+            sum += nums[i];  
             
-            // If k is not zero, take the modulo
             if (k != 0) {
-                sum %= k;  // Get remainder
+                sum %= k;  
             }
             
-            // If this remainder has been seen before
-            if (map.containsKey(sum)) {
-                // Check if the subarray length is at least 2
-                if (i - map.get(sum) > 1) {
+            if (mp.find(sum) != mp.end()) {
+                
+                if (i - mp[sum] > 1) {  
                     return true;
                 }
             } else {
-                // Store the remainder and index
-                map.put(sum, i);
+                
+                mp[sum] = i;
             }
         }
         
-        return false;  // No subarray found
+        return false;
     }
-}
+};

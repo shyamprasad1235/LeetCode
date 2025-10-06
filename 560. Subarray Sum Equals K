@@ -1,28 +1,22 @@
-import java.util.HashMap;
-
-public class Solution {
-    public int subarraySum(int[] nums, int k) {
-        // HashMap to store cumulative sum and its frequency
-        HashMap<Integer, Integer> map = new HashMap<>();
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        unordered_map<int, int> prefixSumMap;  
+        prefixSumMap[0] = 1;  
         
-        // Initialize the map with 0 sum having 1 frequency
-        map.put(0, 1);
+        int currentSum = 0;
         int count = 0;
-        int sum = 0;
         
-        // Traverse through the array
-        for (int num : nums) {
-            sum += num;
+        for (int i = 0; i < nums.size(); i++) {
+            currentSum += nums[i];  
             
-            // Check if (sum - k) exists in the map, add its frequency to count
-            if (map.containsKey(sum - k)) {
-                count += map.get(sum - k);
+            if (prefixSumMap.find(currentSum - k) != prefixSumMap.end()) {
+                count += prefixSumMap[currentSum - k];
             }
             
-            // Update the map with the current cumulative sum
-            map.put(sum, map.getOrDefault(sum, 0) + 1);
+            prefixSumMap[currentSum]++;
         }
         
         return count;
     }
-}
+};

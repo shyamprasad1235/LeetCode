@@ -1,30 +1,47 @@
+1. PrefixMax & SuffixMin
+
 class Solution {
-    public int partitionDisjoint(int[] nums) {
-        int n = nums.length;
+public:
+    int partitionDisjoint(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> prefixMax(n), suffixMin(n);
 
-        // Arrays to store max of left part and min of right part
-        int[] leftMax = new int[n];
-        int[] rightMin = new int[n];
+        prefixMax[0] = nums[0];
+        for (int i = 1; i < n; i++)
+            prefixMax[i] = max(prefixMax[i - 1], nums[i]);
 
-        // Fill the leftMax array
-        leftMax[0] = nums[0];
-        for (int i = 1; i < n; i++) {
-            leftMax[i] = Math.max(leftMax[i - 1], nums[i]);
-        }
+        suffixMin[n - 1] = nums[n - 1];
+        for (int i = n - 2; i >= 0; i--)
+            suffixMin[i] = min(suffixMin[i + 1], nums[i]);
 
-        // Fill the rightMin array
-        rightMin[n - 1] = nums[n - 1];
-        for (int i = n - 2; i >= 0; i--) {
-            rightMin[i] = Math.min(rightMin[i + 1], nums[i]);
-        }
-
-        // Find the partition index
         for (int i = 0; i < n - 1; i++) {
-            if (leftMax[i] <= rightMin[i + 1]) {
-                return i + 1; // Partition point found
+            if (prefixMax[i] <= suffixMin[i + 1])
+                return i + 1; 
+        }
+
+        return n; 
+    }
+};
+
+2. Input Enhancement Method
+
+class Solution {
+public:
+    int partitionDisjoint(vector<int>& nums) {
+        int n = nums.size();
+        int leftMax = nums[0];
+        int overallMax = nums[0];
+        int partitionIdx = 0;
+
+        for (int i = 1; i < n; i++) {
+            overallMax = max(overallMax, nums[i]);
+            if (nums[i] < leftMax) {
+                leftMax = overallMax;
+                partitionIdx = i;
             }
         }
 
-        return -1; // This case will never be reached
+        return partitionIdx + 1;
     }
-}
+};
+

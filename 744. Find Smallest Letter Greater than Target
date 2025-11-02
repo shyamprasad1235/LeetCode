@@ -1,21 +1,21 @@
 class Solution {
-    public char nextGreatestLetter(char[] letters, char target) {
-        int left = 0, right = letters.length - 1;
-        
+public:
+    char nextGreatestLetter(vector<char>& letters, char target) {
+        int left = 0;
+        int right = letters.size() - 1;
+        char result = letters[0]; 
+
         while (left <= right) {
             int mid = left + (right - left) / 2;
-            
-            // If mid element is greater than target, search the left half
+
             if (letters[mid] > target) {
-                right = mid - 1;
-            } 
-            // Otherwise, search the right half
-            else {
-                left = mid + 1;
+                result = letters[mid];  
+                right = mid - 1;        
+            } else {
+                left = mid + 1;          
             }
         }
-        
-        // If left goes out of bounds, return the first element (array is circular)
-        return letters[left % letters.length];
+
+        return result;
     }
-}
+};

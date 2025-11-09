@@ -1,9 +1,29 @@
+1. C++ Code
+
+class Solution {
+public:
+   bool isPerfectSquare(int num) {
+        if (num < 2) return true;
+        long long lo = 1, hi = num / 2;   
+        while (lo <= hi) {
+            long long mid = lo + (hi - lo) / 2;
+            long long sq = mid * mid;
+
+            if (sq == num) return true;
+            if (sq < num) lo = mid + 1;
+            else hi = mid - 1;
+        }
+        return false;
+    }
+};
+
+2. Java Code
+
 public class Solution {
     public boolean isPerfectSquare(int num) {
         if (num < 2) {
-            return true; // 1 is a perfect square
-        }
-        
+            return true; 
+        }        
         long left = 2, right = num / 2;
         
         while (left <= right) {
@@ -11,14 +31,13 @@ public class Solution {
             long guessSquared = mid * mid;
             
             if (guessSquared == num) {
-                return true; // found perfect square
+                return true; 
             } else if (guessSquared < num) {
                 left = mid + 1;
             } else {
                 right = mid - 1;
             }
-        }
-        
-        return false; // no perfect square found
+        }        
+        return false; 
     }
 }

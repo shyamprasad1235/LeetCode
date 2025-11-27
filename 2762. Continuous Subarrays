@@ -1,0 +1,128 @@
+1.Sliding Window + Ordered Set (TreeMap)
+
+class Solution {
+    public long continuousSubarrays(int[] nums) {
+        int n = nums.length;
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        long count = 0;
+        int left = 0;
+
+        for (int right = 0; right < n; right++) {
+
+            map.put(nums[right], map.getOrDefault(nums[right], 0) + 1);
+
+            while (map.lastKey() - map.firstKey() > 2) {
+                map.put(nums[left], map.get(nums[left]) - 1);
+                if (map.get(nums[left]) == 0)
+                    map.remove(nums[left]);
+                left++;
+            }
+            count += right - left + 1;
+        }
+        return count;
+    }
+}
+
+2. Sliding Window + Priority Queue (Heap Method)
+
+class Solution {
+    public long continuousSubarrays(int[] nums) {
+        int n = nums.length;
+        long result = 0;
+        int left = 0;
+
+        PriorityQueue<Integer> maxHeap =
+            new PriorityQueue<>((a, b) -> b - a);
+        PriorityQueue<Integer> minHeap =
+            new PriorityQueue<>();
+
+        Map<Integer, Integer> deleteMax = new HashMap<>();
+        Map<Integer, Integer> deleteMin = new HashMap<>();
+
+        for (int right = 0; right < n; right++) {
+
+            maxHeap.add(nums[right]);
+            minHeap.add(nums[right]);
+
+            while (true) {
+                while (!maxHeap.isEmpty() &&
+                       deleteMax.getOrDefault(maxHeap.peek(), 0) > 0) {
+                    deleteMax.put(maxHeap.peek(),
+                      deleteMax.get(maxHeap.peek()) - 1);
+                    maxHeap.poll();
+                }
+                while (!minHeap.isEmpty() &&
+                       deleteMin.getOrDefault(minHeap.peek(), 0) > 0) {
+                    deleteMin.put(minHeap.peek(),
+                      deleteMin.get(minHeap.peek()) - 1);
+                    minHeap.poll();
+                }
+                if (maxHeap.peek() - minHeap.peek() <= 2)
+                    break;
+                int val = nums[left];
+                deleteMax.put(val, deleteMax.getOrDefault(val, 0) + 1);
+                deleteMin.put(val, deleteMin.getOrDefault(val, 0) + 1);
+                left++;
+            }
+            result += right - left + 1;
+        }
+        return result;
+    }
+}
+
+3. Ordered Set (TreeSet)
+
+class Solution {
+    public long continuousSubarrays(int[] nums) {
+        TreeMap<Integer, Integer> tree = new TreeMap<>();
+        int left = 0;
+        long ans = 0;
+
+        for (int right = 0; right < nums.length; right++) {
+
+            tree.put(nums[right], tree.getOrDefault(nums[right], 0) + 1);
+
+            while (tree.lastKey() - tree.firstKey() > 2) {
+                tree.put(nums[left], tree.get(nums[left]) - 1);
+                if (tree.get(nums[left]) == 0) tree.remove(nums[left]);
+                left++;
+            }
+            ans += right - left + 1;
+        }
+        return ans;
+    }
+}
+
+4. Monotonic Queue (Deque)
+
+class Solution {
+    public long continuousSubarrays(int[] nums) {
+
+        Deque<Integer> maxD = new ArrayDeque<>();  
+        Deque<Integer> minD = new ArrayDeque<>(); 
+
+        long ans = 0;
+        int left = 0;
+
+        for (int right = 0; right < nums.length; right++) {
+
+            while (!maxD.isEmpty() && maxD.peekLast() < nums[right])
+                maxD.pollLast();
+            maxD.addLast(nums[right]);
+
+            while (!minD.isEmpty() && minD.peekLast() > nums[right])
+                minD.pollLast();
+            minD.addLast(nums[right]);
+
+            while (maxD.peekFirst() - minD.peekFirst() > 2) {
+                if (maxD.peekFirst() == nums[left])
+                    maxD.pollFirst();
+                if (minD.peekFirst() == nums[left])
+                    minD.pollFirst();
+                left++;
+            }
+            ans += right - left + 1;
+        }
+        return ans;
+    }
+}

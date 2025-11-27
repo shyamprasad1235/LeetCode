@@ -1,30 +1,35 @@
-/**
- * Definition for singly-linked list.
- * public class ListNode {
- *     int val;
- *     ListNode next;
- *     ListNode(int x) {
- *         val = x;
- *         next = null;
- *     }
- * }
- */
+1. Java Code
+
 public class Solution {
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
         if (headA == null || headB == null) return null;
 
-        // Initialize two pointers for both lists
         ListNode ptrA = headA;
         ListNode ptrB = headB;
 
-        // Traverse both lists
         while (ptrA != ptrB) {
-            // Move to the next node or switch to the other list
             ptrA = (ptrA == null) ? headB : ptrA.next;
             ptrB = (ptrB == null) ? headA : ptrB.next;
         }
-
-        // Return the intersection node or null if no intersection
         return ptrA;
     }
 }
+
+2. C++ Code
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        if (!headA || !headB) return NULL;
+
+        ListNode* a = headA;
+        ListNode* b = headB;
+
+        while (a != b) {
+            a = (a == NULL) ? headB : a->next;
+            b = (b == NULL) ? headA : b->next;
+        }
+        
+        return a; 
+    }
+};
